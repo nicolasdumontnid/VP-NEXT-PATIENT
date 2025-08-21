@@ -1,0 +1,14 @@
+<div class="container">
+  <app-inbox-header 
+    [resultsFound]="resultsFound" 
+    (sortToggle)="onSortToggle()">
+  </app-inbox-header>
+  
+  <app-dashboard-filter 
+    (filterChange)="onFilterChange($event)">
+  </app-dashboard-filter>
+  
+  <div class="no-cases-message">
+    There are no cases assigned to this work list.
+  </div>
+</div>

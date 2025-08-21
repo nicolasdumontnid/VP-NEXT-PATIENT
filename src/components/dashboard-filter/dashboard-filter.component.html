@@ -1,0 +1,131 @@
+<fieldset class="dashboard-filter" [class.collapsed]="isCollapsed">
+  <button class="collapse-toggle" (click)="toggleCollapse()">
+    <i class="fas fa-chevron-up" *ngIf="!isCollapsed"></i>
+    <i class="fas fa-chevron-down" *ngIf="isCollapsed"></i>
+  </button>
+  
+  <div class="filter-content" *ngIf="!isCollapsed">
+    <div class="filter-columns">
+      <!-- Filters Column -->
+      <div class="filter-column">
+        <div class="column-header">
+          <input type="text" placeholder="Filters" [(ngModel)]="filterState.searchText" (input)="onFilterChange()">
+          <hr>
+        </div>
+        <div class="scrollable-content">
+          <div class="radio-group horizontal">
+            <label><input type="radio" name="caseType" value="all" [(ngModel)]="filterState.caseType" (change)="onFilterChange()"> All</label>
+            <label><input type="radio" name="caseType" value="my" [(ngModel)]="filterState.caseType" (change)="onFilterChange()"> My cases</label>
+            <label><input type="radio" name="caseType" value="unassigned" [(ngModel)]="filterState.caseType" (change)="onFilterChange()"> Unassigned</label>
+          </div>
+          <hr class="gray-separator">
+          <div class="radio-group horizontal">
+            <label><input type="radio" name="scanStatus" value="all" [(ngModel)]="filterState.scanStatus" (change)="onFilterChange()"> All</label>
+            <label><input type="radio" name="scanStatus" value="fully_scanned" [(ngModel)]="filterState.scanStatus" (change)="onFilterChange()"> Fully scanned</label>
+            <label><input type="radio" name="scanStatus" value="pending" [(ngModel)]="filterState.scanStatus" (change)="onFilterChange()"> Pending</label>
+          </div>
+          <hr class="gray-separator">
+          <div class="checkbox-list">
+            <label class="hoverable"><input type="checkbox" [(ngModel)]="filterState.urgentOnly" (change)="onFilterChange()"> Urgent only <span class="count">{{ getRandomCount() }}</span></label>
+            <label class="hoverable"><input type="checkbox" [(ngModel)]="filterState.noImagesOnly" (change)="onFilterChange()"> No images scanned only <span class="count">{{ getRandomCount() }}</span></label>
+            <label class="hoverable"><input type="checkbox" [(ngModel)]="filterState.completedSharesOnly" (change)="onFilterChange()"> Completed shares only <span class="count">{{ getRandomCount() }}</span></label>
+            <label class="hoverable"><input type="checkbox" [(ngModel)]="filterState.unseenImagesOnly" (change)="onFilterChange()"> With unseen images only <span class="count">{{ getRandomCount() }}</span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Site Column -->
+      <div class="filter-column">
+        <div class="column-header">
+          <input type="text" placeholder="Site" [(ngModel)]="siteFilter" (input)="filterSites()">
+          <hr>
+        </div>
+        <div class="scrollable-content">
+          <div class="checkbox-list">
+            <label class="hoverable" *ngFor="let site of filteredSites">
+              <input type="checkbox" 
+                     [checked]="filterState.selectedSites.includes(site.name)"
+                     (change)="toggleSite(site.name)">
+              {{ site.name }}
+              <span class="count">{{ site.count }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sectors Column -->
+      <div class="filter-column">
+        <div class="column-header">
+          <input type="text" placeholder="Sectors" [(ngModel)]="sectorFilter" (input)="filterSectors()">
+          <hr>
+        </div>
+        <div class="scrollable-content">
+          <div class="checkbox-list">
+            <label class="hoverable" *ngFor="let sector of filteredSectors">
+              <input type="checkbox" 
+                     [checked]="filterState.selectedSectors.includes(sector.name)"
+                     (change)="toggleSector(sector.name)">
+              {{ sector.name }}
+              <span class="count">{{ sector.count }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assigned Doctors Column -->
+      <div class="filter-column">
+        <div class="column-header">
+          <input type="text" placeholder="Assigned doctors" [(ngModel)]="doctorFilter" (input)="filterDoctors()">
+          <hr>
+        </div>
+        <div class="scrollable-content">
+          <div class="checkbox-list">
+            <label class="hoverable" *ngFor="let doctor of filteredDoctors">
+              <input type="checkbox" 
+                     [checked]="filterState.selectedDoctors.includes(doctor.id)"
+                     (change)="toggleDoctor(doctor.id)">
+              {{ doctor.name }}
+              <span class="count">{{ doctor.count }}</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Date Column -->
+      <div class="filter-column">
+        <div class="column-header">
+          <label class="column-title">Date</label>
+          <hr>
+        </div>
+        <div class="scrollable-content">
+          <div class="radio-group vertical">
+            <label class="hoverable"><input type="radio" name="dateRange" value="all" [(ngModel)]="filterState.dateRange" (change)="onDateRangeChange('all')"> All</label>
+            <label class="hoverable"><input type="radio" name="dateRange" value="today" [(ngModel)]="filterState.dateRange" (change)="onDateRangeChange('today')"> Today</label>
+            <label class="hoverable"><input type="radio" name="dateRange" value="yesterday" [(ngModel)]="filterState.dateRange" (change)="onDateRangeChange('yesterday')"> Yesterday</label>
+            <label class="hoverable"><input type="radio" name="dateRange" value="last_week" [(ngModel)]="filterState.dateRange" (change)="onDateRangeChange('last_week')"> Last Week</label>
+            <label class="hoverable"><input type="radio" name="dateRange" value="last_month" [(ngModel)]="filterState.dateRange" (change)="onDateRangeChange('last_month')"> Last Month</label>
+            <label class="hoverable"><input type="radio" name="dateRange" value="from" [(ngModel)]="filterState.dateRange" (change)="onDateRangeChange('from')"> From</label>
+          </div>
+          <div class="date-inputs">
+            <div class="date-input-row">
+              <div class="date-input-group">
+                <label>From</label>
+                <div class="input-with-icon">
+                  <input type="date" [(ngModel)]="dateFromString" (change)="onManualDateChange()">
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+              </div>
+              <div class="date-input-group">
+                <label>To</label>
+                <div class="input-with-icon">
+                  <input type="date" [(ngModel)]="dateToString" (change)="onManualDateChange()">
+                  <i class="fas fa-calendar-alt"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</fieldset>

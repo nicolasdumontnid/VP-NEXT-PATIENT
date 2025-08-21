@@ -1,0 +1,77 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #303030;
+  color: #ffffff;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh;
+}
+
+.container {
+  padding: 0 10%;
+  width: 100%;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 5%;
+  }
+}
+
+/* Form controls styling */
+input[type="text"], input[type="date"] {
+  background-color: #404040;
+  border: 1px solid #666;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  width: 100%;
+}
+
+input[type="text"]:focus, input[type="date"]:focus {
+  outline: none;
+  border-color: #777;
+}
+
+input[type="checkbox"], input[type="radio"] {
+  accent-color: #ffffff;
+}
+
+/* Fieldset styling */
+fieldset {
+  border: 1px solid #555;
+  background-color: #404040;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+legend {
+  padding: 0 10px;
+  color: #ccc;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #555;
+  margin: 10px 0;
+}
+
+/* Button styling */
+button {
+  background-color: #404040;
+  border: 1px solid #666;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #505050;
+}
