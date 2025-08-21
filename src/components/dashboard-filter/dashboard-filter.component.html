@@ -1,4 +1,5 @@
 <fieldset class="dashboard-filter" [class.collapsed]="isCollapsed">
+  <legend *ngIf="isCollapsed" class="accordion-title">Dashboard Filter</legend>
   <button class="collapse-toggle" (click)="toggleCollapse()">
     <i class="fas fa-chevron-up" *ngIf="!isCollapsed"></i>
     <i class="fas fa-chevron-down" *ngIf="isCollapsed"></i>
