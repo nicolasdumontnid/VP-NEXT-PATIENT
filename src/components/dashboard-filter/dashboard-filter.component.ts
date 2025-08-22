@@ -48,6 +48,7 @@ export class DashboardFilterComponent implements OnInit {
   siteFilter = '';
   sectorFilter = '';
   doctorFilter = '';
+  dateFilter = '';
 
   // Original data
   sites: FilterOption[] = [
