@@ -1,5 +1,13 @@
 <fieldset class="dashboard-filter" [class.collapsed]="isCollapsed">
-  <legend *ngIf="isCollapsed" class="accordion-title">Dashboard Filter</legend>
+  <div class="accordion-title">
+    <div class="title-inputs">
+      <input type="text" placeholder="Filters" [(ngModel)]="filterState.searchText" (input)="onFilterChange()">
+      <input type="text" placeholder="Site" [(ngModel)]="siteFilter" (input)="filterSites()">
+      <input type="text" placeholder="Sectors" [(ngModel)]="sectorFilter" (input)="filterSectors()">
+      <input type="text" placeholder="Assigned doctors" [(ngModel)]="doctorFilter" (input)="filterDoctors()">
+      <input type="text" placeholder="Date" readonly style="cursor: default;">
+    </div>
+  </div>
   <button class="collapse-toggle" (click)="toggleCollapse()">
     <i class="fas fa-chevron-up" *ngIf="!isCollapsed"></i>
     <i class="fas fa-chevron-down" *ngIf="isCollapsed"></i>
@@ -10,7 +18,6 @@
       <!-- Filters Column -->
       <div class="filter-column">
         <div class="column-header">
-          <input type="text" placeholder="Filters" [(ngModel)]="filterState.searchText" (input)="onFilterChange()">
           <hr>
         </div>
         <div class="scrollable-content">
@@ -38,7 +45,6 @@
       <!-- Site Column -->
       <div class="filter-column">
         <div class="column-header">
-          <input type="text" placeholder="Site" [(ngModel)]="siteFilter" (input)="filterSites()">
           <hr>
         </div>
         <div class="scrollable-content">
@@ -57,7 +63,6 @@
       <!-- Sectors Column -->
       <div class="filter-column">
         <div class="column-header">
-          <input type="text" placeholder="Sectors" [(ngModel)]="sectorFilter" (input)="filterSectors()">
           <hr>
         </div>
         <div class="scrollable-content">
@@ -76,7 +81,6 @@
       <!-- Assigned Doctors Column -->
       <div class="filter-column">
         <div class="column-header">
-          <input type="text" placeholder="Assigned doctors" [(ngModel)]="doctorFilter" (input)="filterDoctors()">
           <hr>
         </div>
         <div class="scrollable-content">
@@ -95,7 +99,6 @@
       <!-- Date Column -->
       <div class="filter-column">
         <div class="column-header">
-          <input type="text" placeholder="Date" readonly style="cursor: default;">
           <hr>
         </div>
         <div class="scrollable-content">
