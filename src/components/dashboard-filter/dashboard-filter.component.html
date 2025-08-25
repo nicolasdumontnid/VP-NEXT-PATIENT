@@ -17,9 +17,6 @@
     <div class="filter-columns">
       <!-- Filters Column -->
       <div class="filter-column">
-        <div class="column-header">
-          <hr>
-        </div>
         <div class="scrollable-content">
           <div class="radio-group horizontal">
             <label><input type="radio" name="caseType" value="all" [(ngModel)]="filterState.caseType" (change)="onFilterChange()"> All</label>
@@ -44,9 +41,6 @@
 
       <!-- Site Column -->
       <div class="filter-column">
-        <div class="column-header">
-          <hr>
-        </div>
         <div class="scrollable-content">
           <div class="checkbox-list">
             <label class="hoverable" *ngFor="let site of filteredSites">
@@ -62,9 +56,6 @@
 
       <!-- Sectors Column -->
       <div class="filter-column">
-        <div class="column-header">
-          <hr>
-        </div>
         <div class="scrollable-content">
           <div class="checkbox-list">
             <label class="hoverable" *ngFor="let sector of filteredSectors">
@@ -80,9 +71,6 @@
 
       <!-- Assigned Doctors Column -->
       <div class="filter-column">
-        <div class="column-header">
-          <hr>
-        </div>
         <div class="scrollable-content">
           <div class="checkbox-list">
             <label class="hoverable" *ngFor="let doctor of filteredDoctors">
@@ -98,9 +86,6 @@
 
       <!-- Date Column -->
       <div class="filter-column">
-        <div class="column-header">
-          <hr>
-        </div>
         <div class="scrollable-content">
           <div class="radio-group vertical">
             <label class="hoverable"><input type="radio" name="dateRange" value="all" [(ngModel)]="filterState.dateRange" (change)="onDateRangeChange('all')"> All</label>

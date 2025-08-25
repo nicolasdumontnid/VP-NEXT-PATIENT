@@ -88,26 +88,6 @@
   min-width: 0;
 }
 
-.column-header {
-  flex-shrink: 0;
-  margin-bottom: 5px;
-  height: 50px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.column-header input[type="text"] {
-  margin-bottom: 10px;
-}
-
-.column-header .column-title {
-  margin-bottom: 10px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-}
-
 .scrollable-content {
   flex: 1;
   overflow-y: auto;
