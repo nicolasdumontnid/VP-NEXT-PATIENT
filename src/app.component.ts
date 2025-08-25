@@ -5,6 +5,7 @@ import { DashboardFilterComponent } from './components/dashboard-filter/dashboar
 import { FilterState } from './models/filter.model';
 import { CaseService } from './services/case.service';
 import { UserService } from './services/user.service';
+import { User } from './models/user.model';
 import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map, switchMap, startWith } from 'rxjs/operators';
 
@@ -18,6 +19,7 @@ import { map, switchMap, startWith } from 'rxjs/operators';
 })
 export class AppComponent implements OnInit {
   resultsFound = 6;
+  currentUser: User | undefined;
   private filterState$ = new BehaviorSubject<FilterState>({
     searchText: '',
     caseType: 'all',
