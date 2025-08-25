@@ -3,5 +3,4 @@ export interface User {
   name: string;
   specialty: string;
   site: string;
-  site: string;
 }
