@@ -49,7 +49,7 @@ export class CaseService {
     {
       id: 4,
       title: 'Case #004 - Throat Examination',
-      assignedDoctorId: 2,
+      assignedDoctorId: 4,
       site: 'CHU-Caen',
       sector: 'Throat',
       date: new Date(Date.now() - 259200000),
@@ -188,6 +188,32 @@ export class CaseService {
       hasUnseenImages: false,
       isFullyScanned: false,
       hasShares: false
+    },
+    {
+      id: 15,
+      title: 'Case #015 - General Radiology',
+      assignedDoctorId: 4,
+      site: 'CHU-Caen',
+      sector: 'General',
+      date: new Date(Date.now() - 1209600000),
+      status: 'pending',
+      isScanned: true,
+      hasUnseenImages: false,
+      isFullyScanned: true,
+      hasShares: false
+    },
+    {
+      id: 16,
+      title: 'Case #016 - Oncology Imaging',
+      assignedDoctorId: 4,
+      site: 'CHU-Caen',
+      sector: 'Oncology',
+      date: new Date(Date.now() - 1296000000),
+      status: 'completed',
+      isScanned: true,
+      hasUnseenImages: false,
+      isFullyScanned: true,
+      hasShares: true
     }
   ];
 
