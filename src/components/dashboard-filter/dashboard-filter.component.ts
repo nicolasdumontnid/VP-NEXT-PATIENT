@@ -125,52 +125,53 @@ export class DashboardFilterComponent implements OnInit {
       );
     }
 
-    // Don't apply doctor filter to the cases used for filtering other columns
-    // This ensures doctors list is not filtered by selected doctors
+    // Apply doctor filter
+    if (this.filterState.selectedDoctors.length > 0) {
+      filteredCases = filteredCases.filter(c => 
+        this.filterState.selectedDoctors.includes(c.assignedDoctorId)
+      );
+    }
+
 
     // Get available sites, sectors, and doctors from filtered cases
     const availableSites = [...new Set(filteredCases.map(c => c.site))];
     const availableSectors = [...new Set(filteredCases.map(c => c.sector))];
     const availableDoctorIds = [...new Set(filteredCases.map(c => c.assignedDoctorId))];
 
-    // Additional filtering based on sector-site associations
-    let availableSitesForSectors = availableSites;
-    let availableSectorsForSites = availableSectors;
-    
-    // If sectors are selected, only show sites that have those sectors
-    if (this.filterState.selectedSectors.length > 0) {
-      const sitesForSelectedSectors = this.sectors
-        .filter(s => this.filterState.selectedSectors.includes(s.name))
-        .map(s => s.site!);
-      availableSitesForSectors = availableSites.filter(site => 
-        sitesForSelectedSectors.includes(site)
-      );
-    }
-    
-    // If sites are selected, only show sectors that belong to those sites
-    if (this.filterState.selectedSites.length > 0) {
-      availableSectorsForSites = this.sectors
-        .filter(s => this.filterState.selectedSites.includes(s.site!))
-        .map(s => s.name)
-        .filter(sectorName => availableSectors.includes(sectorName));
-    }
 
     // Update filtered sites
     this.filteredSites = this.sites.filter(site => 
-      availableSitesForSectors.includes(site.name) && 
+      availableSites.includes(site.name) && 
       site.name.toLowerCase().includes(this.siteFilter.toLowerCase())
     ).map(site => ({
       ...site,
-      count: filteredCases.filter(c => c.site === site.name).length
+      count: cases.filter(c => 
+        c.site === site.name &&
+        (this.filterState.selectedSectors.length === 0 || this.filterState.selectedSectors.includes(c.sector)) &&
+        (this.filterState.selectedDoctors.length === 0 || this.filterState.selectedDoctors.includes(c.assignedDoctorId))
+      ).length
     }));
 
     // Update filtered sectors
-    this.filteredSectors = this.sectors.filter(sector => 
-      availableSectorsForSites.includes(sector.name) && 
+    let availableSectorsForSites = this.sectors;
+    
+    // If sites are selected, only show sectors that belong to those sites
+    if (this.filterState.selectedSites.length > 0) {
+      availableSectorsForSites = this.sectors.filter(s => 
+        this.filterState.selectedSites.includes(s.site!)
+      );
+    }
+    
+    this.filteredSectors = availableSectorsForSites.filter(sector => 
+      availableSectors.includes(sector.name) && 
       sector.name.toLowerCase().includes(this.sectorFilter.toLowerCase())
     ).map(sector => ({
       ...sector,
-      count: filteredCases.filter(c => c.sector === sector.name).length
+      count: cases.filter(c => 
+        c.sector === sector.name &&
+        (this.filterState.selectedSites.length === 0 || this.filterState.selectedSites.includes(c.site)) &&
+        (this.filterState.selectedDoctors.length === 0 || this.filterState.selectedDoctors.includes(c.assignedDoctorId))
+      ).length
     }));
 
     // Update filtered doctors - only show doctors from available sites
@@ -187,7 +188,11 @@ export class DashboardFilterComponent implements OnInit {
       doctor.name.toLowerCase().includes(this.doctorFilter.toLowerCase())
     ).map(doctor => ({
       ...doctor,
-      count: filteredCases.filter(c => c.assignedDoctorId === doctor.id).length
+      count: cases.filter(c => 
+        c.assignedDoctorId === doctor.id &&
+        (this.filterState.selectedSites.length === 0 || this.filterState.selectedSites.includes(c.site)) &&
+        (this.filterState.selectedSectors.length === 0 || this.filterState.selectedSectors.includes(c.sector))
+      ).length
     }));
 
     this.cdr.markForCheck();
