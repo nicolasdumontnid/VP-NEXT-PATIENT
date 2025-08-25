@@ -41,6 +41,12 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    // Set current user as Damien (id: 1)
+    this.userService.getById(1).subscribe(user => {
+      this.currentUser = user;
+      this.cdr.markForCheck();
+    });
+    
     this.initializeData();
   }
 

@@ -132,30 +132,62 @@ export class DashboardFilterComponent implements OnInit {
       );
     }
 
-    // Update filtered sites based on available cases
+    // Get available sites, sectors, and doctors from filtered cases
     const availableSites = [...new Set(filteredCases.map(c => c.site))];
+    const availableSectors = [...new Set(filteredCases.map(c => c.sector))];
+    const availableDoctorIds = [...new Set(filteredCases.map(c => c.assignedDoctorId))];
+
+    // Additional filtering based on sector-site associations
+    let availableSitesForSectors = availableSites;
+    let availableSectorsForSites = availableSectors;
+    
+    // If sectors are selected, only show sites that have those sectors
+    if (this.filterState.selectedSectors.length > 0) {
+      const sitesForSelectedSectors = this.sectors
+        .filter(s => this.filterState.selectedSectors.includes(s.name))
+        .map(s => s.site!);
+      availableSitesForSectors = availableSites.filter(site => 
+        sitesForSelectedSectors.includes(site)
+      );
+    }
+    
+    // If sites are selected, only show sectors that belong to those sites
+    if (this.filterState.selectedSites.length > 0) {
+      availableSectorsForSites = this.sectors
+        .filter(s => this.filterState.selectedSites.includes(s.site!))
+        .map(s => s.name)
+        .filter(sectorName => availableSectors.includes(sectorName));
+    }
+
+    // Update filtered sites
     this.filteredSites = this.sites.filter(site => 
-      availableSites.includes(site.name) && 
+      availableSitesForSectors.includes(site.name) && 
       site.name.toLowerCase().includes(this.siteFilter.toLowerCase())
     ).map(site => ({
       ...site,
       count: filteredCases.filter(c => c.site === site.name).length
     }));
 
-    // Update filtered sectors based on available cases
-    const availableSectors = [...new Set(filteredCases.map(c => c.sector))];
+    // Update filtered sectors
     this.filteredSectors = this.sectors.filter(sector => 
-      availableSectors.includes(sector.name) && 
+      availableSectorsForSites.includes(sector.name) && 
       sector.name.toLowerCase().includes(this.sectorFilter.toLowerCase())
     ).map(sector => ({
       ...sector,
       count: filteredCases.filter(c => c.sector === sector.name).length
     }));
 
-    // Update filtered doctors based on available cases
-    const availableDoctorIds = [...new Set(filteredCases.map(c => c.assignedDoctorId))];
+    // Update filtered doctors - only show doctors from available sites
+    let availableDoctorsForSites = this.doctors;
+    if (this.filterState.selectedSites.length > 0) {
+      availableDoctorsForSites = this.doctors.filter(doctor => 
+        this.filterState.selectedSites.includes(doctor.site)
+      );
+    }
+    
     this.filteredDoctors = this.doctors.filter(doctor => 
-      availableDoctorIds.includes(doctor.id) && 
+      availableDoctorIds.includes(doctor.id) &&
+      availableDoctorsForSites.some(d => d.id === doctor.id) &&
       doctor.name.toLowerCase().includes(this.doctorFilter.toLowerCase())
     ).map(doctor => ({
       ...doctor,
