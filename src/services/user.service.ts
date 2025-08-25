@@ -9,16 +9,16 @@ import { SearchResult, SearchCriteria } from '../models/case.model';
 })
 export class UserService {
   private mockUsers: User[] = [
-    { id: 1, name: 'Damien', specialty: 'Oncologist' },
-    { id: 2, name: 'Nicolas', specialty: 'Oncologist' },
-    { id: 3, name: 'Déborah', specialty: 'Pediatrician' },
-    { id: 4, name: 'Daniel', specialty: 'Radiographer' },
-    { id: 5, name: 'Sylvie', specialty: 'General Practitioner' },
-    { id: 6, name: 'Claire', specialty: 'Cardiologist' },
-    { id: 7, name: 'Julien', specialty: 'Emergency Doctor' },
-    { id: 8, name: 'Fatima', specialty: 'Neurologist' },
-    { id: 9, name: 'Thomas', specialty: 'Orthopedic Surgeon' },
-    { id: 10, name: 'Marie', specialty: 'Head Nurse' }
+    { id: 1, name: 'Damien', specialty: 'Oncologue', site: 'CHU-Angers' },
+    { id: 2, name: 'Nicolas', specialty: 'Oncologue', site: 'CHU-Caen' },
+    { id: 3, name: 'Déborah', specialty: 'Pédiatre', site: 'CHU-Angers' },
+    { id: 4, name: 'Daniel', specialty: 'Radiographer', site: 'CHU-Caen' },
+    { id: 5, name: 'Sylvie', specialty: 'Médecin généraliste', site: 'CHU-Caen' },
+    { id: 6, name: 'Claire', specialty: 'Cardiologue', site: 'CHU-Brest' },
+    { id: 7, name: 'Julien', specialty: 'Urgentiste', site: 'CHU-Brest' },
+    { id: 8, name: 'Fatima', specialty: 'Neurologue', site: 'CHU-Brest' },
+    { id: 9, name: 'Thomas', specialty: 'Chirurgien orthopédique', site: 'CHU-Angers' },
+    { id: 10, name: 'Marie', specialty: 'Infirmière en chef', site: 'Remote site' }
   ];
 
   getById(id: number): Observable<User | undefined> {

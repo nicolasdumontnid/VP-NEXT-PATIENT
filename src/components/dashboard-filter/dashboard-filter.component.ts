@@ -11,10 +11,12 @@ import { Case } from '../../models/case.model';
 interface FilterOption {
   name: string;
   count: number;
+  site?: string;
 }
 
 interface DoctorOption extends FilterOption {
   id: number;
+  site: string;
 }
 
 @Component({
@@ -57,15 +59,22 @@ export class DashboardFilterComponent implements OnInit {
     { name: 'CHU-Angers', count: Math.floor(Math.random() * 15) },
     { name: 'CHU-Caen', count: Math.floor(Math.random() * 15) },
     { name: 'CHU-Brest', count: Math.floor(Math.random() * 15) },
-    { name: 'Remote site', count: Math.floor(Math.random() * 15) }
+    { name: 'Remote site', count: Math.floor(Math.random() * 15) },
+    { name: 'CH Le Mans', count: Math.floor(Math.random() * 15) },
+    { name: 'AZ Sint-Maarten', count: Math.floor(Math.random() * 15) }
   ];
 
   sectors: FilterOption[] = [
-    { name: 'Colon', count: Math.floor(Math.random() * 15) },
-    { name: 'Cytologie', count: Math.floor(Math.random() * 15) },
-    { name: 'Florescence', count: Math.floor(Math.random() * 15) },
-    { name: 'Lungs', count: Math.floor(Math.random() * 15) },
-    { name: 'Chest', count: Math.floor(Math.random() * 15) }
+    { name: 'Colon', count: Math.floor(Math.random() * 15), site: 'CHU-Angers' },
+    { name: 'Cytologie', count: Math.floor(Math.random() * 15), site: 'CHU-Angers' },
+    { name: 'Florescence', count: Math.floor(Math.random() * 15), site: 'CHU-Angers' },
+    { name: 'Lungs', count: Math.floor(Math.random() * 15), site: 'CHU-Brest' },
+    { name: 'Chest', count: Math.floor(Math.random() * 15), site: 'CHU-Brest' },
+    { name: 'Breast', count: Math.floor(Math.random() * 15), site: 'CHU-Brest' },
+    { name: 'Histologie', count: Math.floor(Math.random() * 15), site: 'CHU-Brest' },
+    { name: 'Throat', count: Math.floor(Math.random() * 15), site: 'CHU-Caen' },
+    { name: 'Oncology', count: Math.floor(Math.random() * 15), site: 'CHU-Caen' },
+    { name: 'General', count: Math.floor(Math.random() * 15), site: 'CHU-Caen' }
   ];
 
   doctors: DoctorOption[] = [];
@@ -161,7 +170,8 @@ export class DashboardFilterComponent implements OnInit {
       this.doctors = users.map(user => ({
         id: user.id,
         name: user.name,
-        count: Math.floor(Math.random() * 15)
+        count: Math.floor(Math.random() * 15),
+        site: user.site
       }));
       this.filteredDoctors = [...this.doctors];
       this.cdr.markForCheck();
