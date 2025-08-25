@@ -125,12 +125,8 @@ export class DashboardFilterComponent implements OnInit {
       );
     }
 
-    // Apply doctor filter
-    if (this.filterState.selectedDoctors.length > 0) {
-      filteredCases = filteredCases.filter(c => 
-        this.filterState.selectedDoctors.includes(c.assignedDoctorId)
-      );
-    }
+    // Don't apply doctor filter to the cases used for filtering other columns
+    // This ensures doctors list is not filtered by selected doctors
 
     // Get available sites, sectors, and doctors from filtered cases
     const availableSites = [...new Set(filteredCases.map(c => c.site))];
