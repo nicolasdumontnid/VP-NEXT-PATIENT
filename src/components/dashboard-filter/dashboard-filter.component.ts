@@ -125,12 +125,7 @@ export class DashboardFilterComponent implements OnInit {
       );
     }
 
-    // Apply doctor filter
-    if (this.filterState.selectedDoctors.length > 0) {
-      filteredCases = filteredCases.filter(c => 
-        this.filterState.selectedDoctors.includes(c.assignedDoctorId)
-      );
-    }
+    // NOTE: We don't apply doctor filter here because doctors should not filter themselves
 
 
     // Get available sites, sectors, and doctors from filtered cases
@@ -139,9 +134,18 @@ export class DashboardFilterComponent implements OnInit {
     const availableDoctorIds = [...new Set(filteredCases.map(c => c.assignedDoctorId))];
 
 
-    // Update filtered sites
-    this.filteredSites = this.sites.filter(site => 
-      availableSites.includes(site.name) && 
+    // Update filtered sites - filtered by selected doctors only
+    let sitesFilteredByDoctors = this.sites;
+    if (this.filterState.selectedDoctors.length > 0) {
+      const sitesWithSelectedDoctors = [...new Set(cases.filter(c => 
+        this.filterState.selectedDoctors.includes(c.assignedDoctorId)
+      ).map(c => c.site))];
+      sitesFilteredByDoctors = this.sites.filter(site => 
+        sitesWithSelectedDoctors.includes(site.name)
+      );
+    }
+    
+    this.filteredSites = sitesFilteredByDoctors.filter(site => 
       site.name.toLowerCase().includes(this.siteFilter.toLowerCase())
     ).map(site => ({
       ...site,
@@ -152,18 +156,28 @@ export class DashboardFilterComponent implements OnInit {
       ).length
     }));
 
-    // Update filtered sectors
-    let availableSectorsForSites = this.sectors;
+    // Update filtered sectors - filtered by selected sites AND selected doctors
+    let sectorsFilteredBySites = this.sectors;
     
     // If sites are selected, only show sectors that belong to those sites
     if (this.filterState.selectedSites.length > 0) {
-      availableSectorsForSites = this.sectors.filter(s => 
+      sectorsFilteredBySites = this.sectors.filter(s => 
         this.filterState.selectedSites.includes(s.site!)
       );
     }
     
-    this.filteredSectors = availableSectorsForSites.filter(sector => 
-      availableSectors.includes(sector.name) && 
+    // If doctors are selected, only show sectors where these doctors have cases
+    let sectorsFilteredByDoctors = sectorsFilteredBySites;
+    if (this.filterState.selectedDoctors.length > 0) {
+      const sectorsWithSelectedDoctors = [...new Set(cases.filter(c => 
+        this.filterState.selectedDoctors.includes(c.assignedDoctorId)
+      ).map(c => c.sector))];
+      sectorsFilteredByDoctors = sectorsFilteredBySites.filter(sector => 
+        sectorsWithSelectedDoctors.includes(sector.name)
+      );
+    }
+    
+    this.filteredSectors = sectorsFilteredByDoctors.filter(sector => 
       sector.name.toLowerCase().includes(this.sectorFilter.toLowerCase())
     ).map(sector => ({
       ...sector,
@@ -174,17 +188,25 @@ export class DashboardFilterComponent implements OnInit {
       ).length
     }));
 
-    // Update filtered doctors - only show doctors from available sites
-    let availableDoctorsForSites = this.doctors;
+    // Update filtered doctors - filtered by selected sites and sectors, but NOT by selected doctors
+    let doctorsFilteredBySites = this.doctors;
     if (this.filterState.selectedSites.length > 0) {
-      availableDoctorsForSites = this.doctors.filter(doctor => 
+      doctorsFilteredBySites = this.doctors.filter(doctor => 
         this.filterState.selectedSites.includes(doctor.site)
       );
     }
     
-    this.filteredDoctors = this.doctors.filter(doctor => 
-      availableDoctorIds.includes(doctor.id) &&
-      availableDoctorsForSites.some(d => d.id === doctor.id) &&
+    let doctorsFilteredBySectors = doctorsFilteredBySites;
+    if (this.filterState.selectedSectors.length > 0) {
+      const doctorsWithSelectedSectors = [...new Set(cases.filter(c => 
+        this.filterState.selectedSectors.includes(c.sector)
+      ).map(c => c.assignedDoctorId))];
+      doctorsFilteredBySectors = doctorsFilteredBySites.filter(doctor => 
+        doctorsWithSelectedSectors.includes(doctor.id)
+      );
+    }
+    
+    this.filteredDoctors = doctorsFilteredBySectors.filter(doctor => 
       doctor.name.toLowerCase().includes(this.doctorFilter.toLowerCase())
     ).map(doctor => ({
       ...doctor,
