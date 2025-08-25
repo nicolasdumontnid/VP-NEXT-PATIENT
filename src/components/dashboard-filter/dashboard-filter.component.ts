@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { FilterState } from '../../models/filter.model';
 import { UserService } from '../../services/user.service';
 import { User } from '../../models/user.model';
+import { CaseService } from '../../services/case.service';
+import { Case } from '../../models/case.model';
 
 interface FilterOption {
   name: string;
@@ -79,13 +81,79 @@ export class DashboardFilterComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private caseService: CaseService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.initializeDoctors();
     this.initializeFiltered();
+    this.loadCasesAndUpdateFilters();
     this.emitFilter();
+  }
+
+  private loadCasesAndUpdateFilters() {
+    this.caseService.search({ query: '', page: 1, pageSize: 1000 }).subscribe(result => {
+      this.updateFilteredOptions(result.items);
+    });
+  }
+
+  private updateFilteredOptions(cases: Case[]) {
+    // Filter cases based on current selections
+    let filteredCases = cases;
+
+    // Apply site filter
+    if (this.filterState.selectedSites.length > 0) {
+      filteredCases = filteredCases.filter(c => 
+        this.filterState.selectedSites.includes(c.site)
+      );
+    }
+
+    // Apply sector filter
+    if (this.filterState.selectedSectors.length > 0) {
+      filteredCases = filteredCases.filter(c => 
+        this.filterState.selectedSectors.includes(c.sector)
+      );
+    }
+
+    // Apply doctor filter
+    if (this.filterState.selectedDoctors.length > 0) {
+      filteredCases = filteredCases.filter(c => 
+        this.filterState.selectedDoctors.includes(c.assignedDoctorId)
+      );
+    }
+
+    // Update filtered sites based on available cases
+    const availableSites = [...new Set(filteredCases.map(c => c.site))];
+    this.filteredSites = this.sites.filter(site => 
+      availableSites.includes(site.name) && 
+      site.name.toLowerCase().includes(this.siteFilter.toLowerCase())
+    ).map(site => ({
+      ...site,
+      count: filteredCases.filter(c => c.site === site.name).length
+    }));
+
+    // Update filtered sectors based on available cases
+    const availableSectors = [...new Set(filteredCases.map(c => c.sector))];
+    this.filteredSectors = this.sectors.filter(sector => 
+      availableSectors.includes(sector.name) && 
+      sector.name.toLowerCase().includes(this.sectorFilter.toLowerCase())
+    ).map(sector => ({
+      ...sector,
+      count: filteredCases.filter(c => c.sector === sector.name).length
+    }));
+
+    // Update filtered doctors based on available cases
+    const availableDoctorIds = [...new Set(filteredCases.map(c => c.assignedDoctorId))];
+    this.filteredDoctors = this.doctors.filter(doctor => 
+      availableDoctorIds.includes(doctor.id) && 
+      doctor.name.toLowerCase().includes(this.doctorFilter.toLowerCase())
+    ).map(doctor => ({
+      ...doctor,
+      count: filteredCases.filter(c => c.assignedDoctorId === doctor.id).length
+    }));
+
+    this.cdr.markForCheck();
   }
 
   private initializeDoctors() {
@@ -97,6 +165,7 @@ export class DashboardFilterComponent implements OnInit {
       }));
       this.filteredDoctors = [...this.doctors];
       this.cdr.markForCheck();
+      this.loadCasesAndUpdateFilters();
     });
   }
 
@@ -110,28 +179,23 @@ export class DashboardFilterComponent implements OnInit {
   }
 
   onFilterChange() {
+    this.loadCasesAndUpdateFilters();
     this.emitFilter();
   }
 
   filterSites() {
     const filter = this.siteFilter.toLowerCase();
-    this.filteredSites = this.sites.filter(site => 
-      site.name.toLowerCase().includes(filter)
-    );
+    this.loadCasesAndUpdateFilters();
   }
 
   filterSectors() {
     const filter = this.sectorFilter.toLowerCase();
-    this.filteredSectors = this.sectors.filter(sector => 
-      sector.name.toLowerCase().includes(filter)
-    );
+    this.loadCasesAndUpdateFilters();
   }
 
   filterDoctors() {
     const filter = this.doctorFilter.toLowerCase();
-    this.filteredDoctors = this.doctors.filter(doctor => 
-      doctor.name.toLowerCase().includes(filter)
-    );
+    this.loadCasesAndUpdateFilters();
   }
 
   toggleSite(siteName: string) {
@@ -141,6 +205,7 @@ export class DashboardFilterComponent implements OnInit {
     } else {
       this.filterState.selectedSites.push(siteName);
     }
+    this.loadCasesAndUpdateFilters();
     this.emitFilter();
   }
 
@@ -151,6 +216,7 @@ export class DashboardFilterComponent implements OnInit {
     } else {
       this.filterState.selectedSectors.push(sectorName);
     }
+    this.loadCasesAndUpdateFilters();
     this.emitFilter();
   }
 
@@ -161,6 +227,7 @@ export class DashboardFilterComponent implements OnInit {
     } else {
       this.filterState.selectedDoctors.push(doctorId);
     }
+    this.loadCasesAndUpdateFilters();
     this.emitFilter();
   }
 
@@ -212,6 +279,7 @@ export class DashboardFilterComponent implements OnInit {
         this.dateToString = this.formatDateForInput(today);
         break;
     }
+    this.loadCasesAndUpdateFilters();
     this.emitFilter();
   }
 
@@ -219,6 +287,7 @@ export class DashboardFilterComponent implements OnInit {
     this.filterState.dateRange = 'from';
     this.filterState.dateFrom = this.dateFromString ? new Date(this.dateFromString) : undefined;
     this.filterState.dateTo = this.dateToString ? new Date(this.dateToString) : undefined;
+    this.loadCasesAndUpdateFilters();
     this.emitFilter();
   }
 
