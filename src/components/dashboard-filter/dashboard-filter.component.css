@@ -12,7 +12,7 @@
 
 .accordion-title {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   padding-top: 10px;
 }
 
@@ -67,7 +67,7 @@
 }
 
 .filter-content {
-  height: 100%;
+  height: 75%;
   transition: opacity 0.3s ease;
 }
 
@@ -90,7 +90,7 @@
 
 .column-header {
   flex-shrink: 0;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   height: 50px;
   display: flex;
   flex-direction: column;
@@ -111,7 +111,10 @@
 .scrollable-content {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 5px;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .scrollable-content::-webkit-scrollbar {
@@ -166,6 +169,19 @@
   padding: 4px 8px;
   border-radius: 4px;
   transition: background-color 0.2s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.radio-group label span,
+.checkbox-list label span:not(.count) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  flex: 1;
 }
 
 .hoverable:hover {
