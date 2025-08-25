@@ -1,8 +1,8 @@
 .dashboard-filter {
   position: relative;
   margin: 20px 0;
-  height: 30vh;
-  max-height: 370px;
+  height: 370px;
+  max-height: 50vh;
   background-color: #252525;
   border: 1px solid #555;
   border-radius: 8px;
